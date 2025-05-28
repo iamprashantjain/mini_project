@@ -16,6 +16,7 @@ import dagshub
 dagshub.init(repo_owner='iamprashantjain', repo_name='mini_project', mlflow=True)
 mlflow.set_tracking_uri("https://dagshub.com/iamprashantjain/mini_project.mlflow")
 
+mlflow.set_experiment("dvc-pipeline")
 
 try:
     # Load test data
@@ -59,9 +60,7 @@ except Exception as e:
     raise CustomException(e, sys)
 
 # Registering model to MLflow and logging experiment info
-def main():
-    mlflow.set_experiment("dvc-pipeline")
-    
+def main():   
     with mlflow.start_run():
         try:
             # Log metrics
@@ -86,3 +85,7 @@ def main():
             logging.info("Exception occurred during MLflow logging")
             raise CustomException(e, sys)
 
+
+
+if __name__ == "__main__":
+    main()

@@ -48,20 +48,20 @@ stages:
       size: 1860
     params:
       params.yaml:
-        feature_engineering.max_features: 49
+        feature_engineering.max_features: 50
     outs:
     - path: data/feature_engineered
       hash: md5
-      md5: 4aaa10b41aaee24dd43091277e886a64.dir
-      size: 1000303
+      md5: a36fb2a43e76591646cc6899994c6b9b.dir
+      size: 1020111
       nfiles: 2
   train_model:
     cmd: py src/train_model.py
     deps:
     - path: data/feature_engineered/train_data.csv
       hash: md5
-      md5: d14fd57a76e6d65684979c4dd348ec81
-      size: 800980
+      md5: ebbb2046ad30c13b72779a3db7020dbe
+      size: 816841
     - path: src/train_model.py
       hash: md5
       md5: 2ae92cb20ff2e9096d6ca84581141394
@@ -73,20 +73,35 @@ stages:
     outs:
     - path: models/xgb_model.joblib
       hash: md5
-      md5: 4a416344f88a4ce84ce0f0ea9330f98d
+      md5: dc31c770a728ec5591be5b1c221a1484
       size: 57073
   evaluate_model:
     cmd: py src/evaluate_model.py
     deps:
     - path: data/feature_engineered/test_data.csv
       hash: md5
-      md5: fa4ec27e073a34edf7163812185458cb
-      size: 199323
+      md5: 2878fcb0273266c1ce5ceab05203dc0e
+      size: 203270
     - path: models/xgb_model.joblib
       hash: md5
-      md5: 4a416344f88a4ce84ce0f0ea9330f98d
+      md5: dc31c770a728ec5591be5b1c221a1484
       size: 57073
     - path: src/evaluate_model.py
       hash: md5
-      md5: 881251f377596f5d0ebd35dd0c4566ab
-      size: 2855
+      md5: c23c53f730de10821809eeb40d849437
+      size: 2890
+  register_model:
+    cmd: py src/register_model.py
+    deps:
+    - path: metrics/metrics.json
+      hash: md5
+      md5: 570a9eabb43ee627c17b7aeb519dcc23
+      size: 101
+    - path: models/xgb_model.joblib
+      hash: md5
+      md5: dc31c770a728ec5591be5b1c221a1484
+      size: 57073
+    - path: src/register_model.py
+      hash: md5
+      md5: 64686d345df49031b68eda45dd2f256e
+      size: 2153
