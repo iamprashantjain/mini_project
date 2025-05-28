@@ -1,0 +1,92 @@
+schema: '2.0'
+stages:
+  data_ingestion:
+    cmd: py src/data_ingestion.py
+    deps:
+    - path: src/data_ingestion.py
+      hash: md5
+      md5: d9f9e7d2453ee8c4b142c6b8fadd746c
+      size: 1401
+    params:
+      params.yaml:
+        data_ingestion.test_size: 0.2
+    outs:
+    - path: data/raw
+      hash: md5
+      md5: ec02dbd12f39c779047dd3e43fb70a2b.dir
+      size: 827973
+      nfiles: 2
+  data_preprocessing:
+    cmd: py src/data_preprocessing.py
+    deps:
+    - path: data/raw
+      hash: md5
+      md5: ec02dbd12f39c779047dd3e43fb70a2b.dir
+      size: 827973
+      nfiles: 2
+    - path: src/data_preprocessing.py
+      hash: md5
+      md5: 4eea2c0407f74b33d5c221453ee95079
+      size: 3022
+    outs:
+    - path: data/processed
+      hash: md5
+      md5: 5a97978b4e7e51d954898b1e1ef9072c.dir
+      size: 558621
+      nfiles: 2
+  feature_engineering:
+    cmd: py src/feature_engineering.py
+    deps:
+    - path: data/processed
+      hash: md5
+      md5: 5a97978b4e7e51d954898b1e1ef9072c.dir
+      size: 558621
+      nfiles: 2
+    - path: src/feature_engineering.py
+      hash: md5
+      md5: 377b0dc9554e3a63f11b5d913ad2ffc5
+      size: 1860
+    params:
+      params.yaml:
+        feature_engineering.max_features: 49
+    outs:
+    - path: data/feature_engineered
+      hash: md5
+      md5: 4aaa10b41aaee24dd43091277e886a64.dir
+      size: 1000303
+      nfiles: 2
+  train_model:
+    cmd: py src/train_model.py
+    deps:
+    - path: data/feature_engineered/train_data.csv
+      hash: md5
+      md5: d14fd57a76e6d65684979c4dd348ec81
+      size: 800980
+    - path: src/train_model.py
+      hash: md5
+      md5: 2ae92cb20ff2e9096d6ca84581141394
+      size: 1335
+    params:
+      params.yaml:
+        train_model.learning_rate: 0.1
+        train_model.n_estimators: 25
+    outs:
+    - path: models/xgb_model.joblib
+      hash: md5
+      md5: 4a416344f88a4ce84ce0f0ea9330f98d
+      size: 57073
+  evaluate_model:
+    cmd: py src/evaluate_model.py
+    deps:
+    - path: data/feature_engineered/test_data.csv
+      hash: md5
+      md5: fa4ec27e073a34edf7163812185458cb
+      size: 199323
+    - path: models/xgb_model.joblib
+      hash: md5
+      md5: 4a416344f88a4ce84ce0f0ea9330f98d
+      size: 57073
+    - path: src/evaluate_model.py
+      hash: md5
+      md5: 881251f377596f5d0ebd35dd0c4566ab
+      size: 2855
